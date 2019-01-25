@@ -11,17 +11,19 @@ loop = asyncio.get_event_loop()
 async def interactive_shell():
 
     # Create Prompt.
-    session = PromptSession('Say something: ')
+    session = PromptSession()
 
-    # initialize database
     nds = dictlib.DictSession()
-    #populate session object with databases
-    await nds.dblist()
+    try:
+        await nds.dblist()
+    except ConnectionRefusedError as e:
+        print(e)
+
 
     # Run echo loop. Read text from stdin, and reply it back.
     while True:
         try:
-            input = await session.prompt('>',async_=True)            
+            input = await session.prompt('>',async_=True)
         except (EOFError, KeyboardInterrupt):
             return
 
@@ -51,11 +53,9 @@ async def interactive_shell():
                 result = await nds.lookup(nds.dbs[nds.selected-1][0],input)
                 for x in result[1:]:
                     print(x)
-      
 def main():
     # Tell prompt_toolkit to use the asyncio event loop.
    use_asyncio_event_loop()
-   
    with patch_stdout():
     shell_task = asyncio.ensure_future(interactive_shell())
     loop.run_until_complete(shell_task)

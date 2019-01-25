@@ -1,13 +1,11 @@
 import wordbook
 
 class DictSession():
-    
-    
     def __init__(self):
        self.dbs = []
        self.dblength = 0
        self.selected = None
-               
+
     async def showdb(self):
         dictb = wordbook.DictBase()
         await dictb.connect()
@@ -32,7 +30,7 @@ class DictSession():
             dbstructure.append([shortdesc,longdesc])
         self.dbs = dbstructure
         self.dblength = len(dbstructure)
-    
+
     async def lookup(self, database, word):
         dictb = wordbook.DictBase()
         await dictb.connect()
